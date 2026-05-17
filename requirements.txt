@@ -1,0 +1,14 @@
+Django>=5.1,<6.0
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.34,<1.0
+gunicorn>=23.0,<24.0
+pydantic>=2.10,<3.0
+python-dotenv>=1.0,<2.0
+httpx>=0.28,<1.0
+psycopg[binary]>=3.2,<4.0
+pypdf>=6.10.2,<7.0
+python-multipart>=0.0.9,<1.0
+reportlab>=4.4,<5.0
+whitenoise>=6.8,<7.0
+
+

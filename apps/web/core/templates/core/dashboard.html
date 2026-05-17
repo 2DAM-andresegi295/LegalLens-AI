@@ -1,0 +1,118 @@
+{% extends "core/base.html" %}
+{% load risk_filters %}
+
+{% block title %}Panel privado | LegalLens AI{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h1 style="margin-top:0;">Panel privado</h1>
+    <p>Bienvenido, {{ request.user.username }}. Aquí tienes el listado de tus contratos auditados y el acceso a sus informes.</p>
+</section>
+
+<section class="grid">
+    <article class="card">
+        <div class="muted">Mis contratos</div>
+        <div class="metric">{{ total_contracts }}</div>
+    </article>
+    <article class="card">
+        <div class="muted">Mis análisis</div>
+        <div class="metric">{{ total_analyses }}</div>
+    </article>
+    <article class="card">
+        <div class="muted">Riesgo alto</div>
+        <div class="metric">{{ high_risk_count }}</div>
+    </article>
+</section>
+
+<section class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h2 style="margin: 0 0 8px;">Mis contratos</h2>
+            <p class="muted" style="margin:0;">Tabla principal de contratos del abogado autenticado, con su estado de riesgo y acceso al informe.</p>
+        </div>
+        <a class="btn btn-primary" href="{% url 'contract-create' %}">Analizar nuevo contrato</a>
+    </div>
+
+    {% if recent_contract_rows %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Contrato</th>
+                    <th>Archivo</th>
+                    <th>Cliente</th>
+                    <th>Tipo</th>
+                    <th>Fecha</th>
+                    <th>Riesgo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in recent_contract_rows %}
+                <tr>
+                    <td>{{ row.contract.title }}</td>
+                    <td>
+                        {% if row.contract_filename %}
+                            {{ row.contract_filename }}
+                        {% else %}
+                            Texto manual
+                        {% endif %}
+                    </td>
+                    <td>{{ row.contract.client_name }}</td>
+                    <td>{{ row.contract.get_contract_type_display }}</td>
+                    <td>{{ row.uploaded_at_display }}</td>
+                    <td>
+                        {% if row.latest_analysis %}
+                            <span class="badge badge-{{ row.latest_analysis.risk_level }}">{{ row.latest_analysis.risk_level|risk_label }}</span>
+                        {% else %}
+                            <span class="badge badge-low">PENDIENTE</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if row.latest_analysis %}
+                            <a href="{% url 'analysis-detail' row.latest_analysis.pk %}">Ver informe</a>
+                        {% else %}
+                            <span class="muted">Sin informe</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="muted">Todavía no has analizado contratos. Puedes empezar con un PDF o pegando texto.</p>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h2 style="margin: 0 0 8px;">Últimas auditorías</h2>
+    <p class="muted" style="margin:0 0 16px;">Vista resumida de las revisiones más recientes generadas por el motor legal.</p>
+
+    {% if recent_analyses %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Contrato</th>
+                    <th>Motor</th>
+                    <th>Riesgo</th>
+                    <th>Fecha</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for analysis in recent_analyses %}
+                <tr>
+                    <td>{{ analysis.analysis.contract.title }}</td>
+                    <td>{{ analysis.analysis.engine }}</td>
+                    <td><span class="badge badge-{{ analysis.analysis.risk_level }}">{{ analysis.analysis.risk_level|risk_label }}</span></td>
+                    <td>{{ analysis.created_at_display }}</td>
+                    <td><a href="{% url 'analysis-detail' analysis.analysis.pk %}">Abrir</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="muted">Aún no existen auditorías generadas.</p>
+    {% endif %}
+</section>
+{% endblock %}
+

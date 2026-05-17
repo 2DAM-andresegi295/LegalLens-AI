@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LegalLens AI{% endblock %}</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0f172a;
+            --card: #111827;
+            --card-soft: #1e293b;
+            --border: #334155;
+            --text: #e5e7eb;
+            --muted: #94a3b8;
+            --accent: #38bdf8;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+        a { color: var(--accent); text-decoration: none; }
+        .container {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 32px 20px 48px;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .brand { font-size: 1.5rem; font-weight: bold; }
+        .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--card-soft);
+            color: var(--text);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #0284c7, #0ea5e9);
+            border-color: #0ea5e9;
+            color: white;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        .metric { font-size: 1.9rem; font-weight: bold; margin-top: 6px; }
+        .muted { color: var(--muted); }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            border: 1px solid currentColor;
+        }
+        .badge-high { color: #fecaca; background: rgba(239, 68, 68, 0.12); }
+        .badge-medium { color: #fde68a; background: rgba(245, 158, 11, 0.12); }
+        .badge-low { color: #bbf7d0; background: rgba(34, 197, 94, 0.12); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            vertical-align: top;
+        }
+        input, select, textarea {
+            width: 100%;
+            margin-top: 6px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: #0b1120;
+            color: var(--text);
+        }
+        label { display: block; margin-bottom: 16px; font-weight: 600; }
+        .errorlist {
+            color: #fecaca;
+            margin: 8px 0 0;
+            padding-left: 20px;
+        }
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 16px;
+        }
+        .messages li {
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 10px;
+        }
+        .messages .success { background: rgba(34, 197, 94, 0.12); }
+        .messages .error { background: rgba(239, 68, 68, 0.12); }
+        .finding {
+            border-left: 4px solid var(--danger);
+            padding-left: 16px;
+            margin-bottom: 18px;
+        }
+        .summary-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .summary-pill {
+            min-width: 210px;
+            flex: 1 1 220px;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.65);
+        }
+        .summary-pill .label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--muted);
+            font-weight: 700;
+        }
+        .summary-pill .value {
+            display: block;
+            font-size: 0.98rem;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .analysis-layout {
+            align-items: start;
+        }
+        .analysis-column {
+            min-width: 0;
+        }
+        .analysis-stack {
+            display: grid;
+            gap: 20px;
+        }
+        .analysis-text {
+            white-space: pre-wrap;
+            line-height: 1.6;
+            font-family: inherit;
+            margin: 0;
+            max-height: 72vh;
+            overflow: auto;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #0b1120;
+        }
+        .compact-table {
+            margin-top: 0;
+        }
+        .compact-table th,
+        .compact-table td {
+            padding: 10px 12px;
+        }
+        .key-data-table th {
+            width: 38%;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-size: 0.78rem;
+        }
+        .admin-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .admin-metric-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+        }
+        .admin-metric-card strong {
+            display: block;
+            font-size: 1.6rem;
+            margin-top: 8px;
+        }
+        .mini-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+        .mini-list li {
+            margin-bottom: 8px;
+        }
+        @media (max-width: 900px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+            .analysis-text {
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="topbar">
+            <a class="brand" href="/">LegalLens AI</a>
+            <nav class="actions">
+                {% if request.user.is_authenticated %}
+                    {% if request.user.is_staff %}
+                        <a class="btn" href="/admin/">Admin</a>
+                    {% endif %}
+                    <a class="btn" href="{% url 'home' %}">Panel</a>
+                    <a class="btn btn-primary" href="{% url 'contract-create' %}">Nuevo contrato</a>
+                    <form method="post" action="{% url 'logout' %}" style="margin:0; display:inline;">
+                        {% csrf_token %}
+                        <button class="btn" type="submit">Salir</button>
+                    </form>
+                {% else %}
+                    <a class="btn" href="{% url 'login' %}">Iniciar sesión</a>
+                    <a class="btn btn-primary" href="{% url 'signup' %}">Crear cuenta</a>
+                {% endif %}
+            </nav>
+        </header>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
+

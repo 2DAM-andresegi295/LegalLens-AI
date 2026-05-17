@@ -1,0 +1,37 @@
+{% extends "core/base.html" %}
+
+{% block title %}Nuevo contrato | LegalLens AI{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h1 style="margin-top:0;">Nueva auditoría contractual</h1>
+    <p class="muted">Puedes subir un PDF real o pegar el texto del contrato. El motor detectará cláusulas de alquiler, NDA y contratos generales.</p>
+</section>
+
+<section class="card">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% for field in form %}
+            <label>
+                {{ field.label }}
+                {{ field }}
+                {% if field.help_text %}<small class="muted">{{ field.help_text }}</small>{% endif %}
+                {{ field.errors }}
+            </label>
+        {% endfor %}
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn btn-primary" type="submit">Analizar y guardar</button>
+            <a class="btn" href="/">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}
+

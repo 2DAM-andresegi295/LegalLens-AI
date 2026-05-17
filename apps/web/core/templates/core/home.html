@@ -1,0 +1,30 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h1 style="margin-top: 0;">Auditoría contractual asistida por IA</h1>
+    <p>LegalLens AI automatiza la revisión inicial de contratos de alquiler y acuerdos de confidencialidad con un panel profesional en Django y un motor de análisis en FastAPI.</p>
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:18px;">
+        <a class="btn btn-primary" href="{% url 'signup' %}">Crear cuenta</a>
+        <a class="btn" href="{% url 'login' %}">Iniciar sesión</a>
+    </div>
+</section>
+
+<section class="grid">
+    <article class="card">
+        <div class="muted">Contratos analizados</div>
+        <div class="metric">{{ global_total_contracts }}</div>
+    </article>
+    <article class="card">
+        <div class="muted">Auditorías generadas</div>
+        <div class="metric">{{ global_total_analyses }}</div>
+    </article>
+    <article class="card">
+        <div class="muted">Riesgo alto detectado</div>
+        <div class="metric">{{ global_high_risk_count }}</div>
+    </article>
+</section>
+{% endblock %}
+

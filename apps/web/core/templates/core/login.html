@@ -1,0 +1,19 @@
+{% extends "core/base.html" %}
+
+{% block title %}Entrar | LegalLens AI{% endblock %}
+
+{% block content %}
+<section class="card" style="max-width: 560px; margin: 0 auto;">
+    <h1 style="margin-top:0;">Acceso de abogados</h1>
+    <p class="muted">Entra para ver tu panel privado y tus auditorías.</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn btn-primary" type="submit">Entrar</button>
+            <a class="btn" href="{% url 'signup' %}">Crear cuenta</a>
+        </div>
+    </form>
+</section>
+{% endblock %}
+

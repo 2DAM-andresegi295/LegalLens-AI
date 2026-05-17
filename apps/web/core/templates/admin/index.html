@@ -1,0 +1,110 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .admin-dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin: 0 0 24px;
+    }
+    .admin-dashboard-card {
+        background: #111827;
+        color: #e5e7eb;
+        border: 1px solid #334155;
+        border-radius: 14px;
+        padding: 18px;
+    }
+    .admin-dashboard-card .label {
+        display: block;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color: #94a3b8;
+        margin-bottom: 8px;
+    }
+    .admin-dashboard-card .value {
+        display: block;
+        font-size: 28px;
+        font-weight: 700;
+    }
+    .admin-dashboard-section {
+        background: #111827;
+        color: #e5e7eb;
+        border: 1px solid #334155;
+        border-radius: 14px;
+        padding: 18px;
+        margin-bottom: 24px;
+    }
+    .admin-dashboard-section h2,
+    .admin-dashboard-section h3 {
+        color: #f8fafc;
+        margin-top: 0;
+    }
+    .admin-dashboard-section ul {
+        margin: 0;
+        padding-left: 18px;
+    }
+    .admin-dashboard-section li {
+        margin-bottom: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    {% if admin_metrics %}
+        <section class="admin-dashboard-section">
+            <h2>Resumen global de LegalLens AI</h2>
+            <p>Panel ejecutivo para el socio senior con actividad diaria, distribución de riesgo y trampas más repetidas.</p>
+            <div class="admin-dashboard-grid">
+                <div class="admin-dashboard-card">
+                    <span class="label">Contratos analizados hoy</span>
+                    <span class="value">{{ admin_metrics.contracts_today }}</span>
+                </div>
+                <div class="admin-dashboard-card">
+                    <span class="label">Auditorías generadas hoy</span>
+                    <span class="value">{{ admin_metrics.analyses_today }}</span>
+                </div>
+                <div class="admin-dashboard-card">
+                    <span class="label">Riesgo alto acumulado</span>
+                    <span class="value">{{ admin_metrics.high_risk_total }}</span>
+                </div>
+            </div>
+            <div class="admin-dashboard-grid">
+                <div class="admin-dashboard-card">
+                    <span class="label">Riesgo alto</span>
+                    <span class="value">{{ admin_metrics.risk_breakdown.high }}</span>
+                </div>
+                <div class="admin-dashboard-card">
+                    <span class="label">Riesgo medio</span>
+                    <span class="value">{{ admin_metrics.risk_breakdown.medium }}</span>
+                </div>
+                <div class="admin-dashboard-card">
+                    <span class="label">Riesgo bajo</span>
+                    <span class="value">{{ admin_metrics.risk_breakdown.low }}</span>
+                </div>
+            </div>
+            <h3>Tipos de trampas más comunes</h3>
+            {% if admin_metrics.top_findings %}
+                <ul>
+                    {% for item in admin_metrics.top_findings %}
+                        <li><strong>{{ item.label }}</strong>: {{ item.total }} caso{{ item.total|pluralize }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aún no hay hallazgos suficientes para mostrar tendencias.</p>
+            {% endif %}
+        </section>
+    {% endif %}
+
+    {% if app_list %}
+        {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+    {% else %}
+        <p>{% translate "You don’t have permission to view or edit anything." %}</p>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,72 @@
+{% extends "core/base.html" %}
+{% load risk_filters %}
+
+{% block title %}Informe de auditoría | LegalLens AI{% endblock %}
+
+{% block content %}
+<section class="two-columns analysis-layout">
+    <article class="card analysis-column">
+        <div style="display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:flex-start;">
+            <div>
+                <h1 style="margin-top:0;">{{ contract.title }}</h1>
+                <p class="muted">Cliente: {{ contract.client_name }} · Tipo: {{ contract.get_contract_type_display }} · Origen: {{ contract.source_type }}</p>
+                {% if contract.original_file %}
+                    <p><a href="{{ contract.original_file.url }}" target="_blank" rel="noopener">Descargar PDF original</a></p>
+                {% endif %}
+            </div>
+            <div>
+                <span class="badge badge-{{ analysis.risk_level }}">Riesgo {{ analysis.risk_level|risk_label }}</span>
+            </div>
+        </div>
+
+        <h2 style="margin: 18px 0 12px;">Texto analizado</h2>
+        <pre class="analysis-text">{{ contract.raw_text }}</pre>
+    </article>
+
+    <div class="analysis-column analysis-stack">
+        <article class="card">
+            <h2 style="margin-top:0;">Informe de la IA</h2>
+            <p>{{ analysis.summary }}</p>
+            <p class="muted">Motor: {{ analysis.engine }} {% if analysis.llm_used %}· con apoyo LLM{% else %}· solo reglas{% endif %}</p>
+
+            <h3 style="margin:20px 0 10px;">Datos clave</h3>
+            {% if analysis.key_data %}
+                <table class="compact-table key-data-table">
+                    <tbody>
+                    {% for key, value in analysis.key_data.items %}
+                        <tr>
+                            <th>{{ key|title }}</th>
+                            <td>{{ value }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="muted">No se extrajeron datos estructurados en esta revisión.</p>
+            {% endif %}
+        </article>
+
+        <article class="card">
+            <h2 style="margin-top:0;">Alertas legales</h2>
+            {% if grouped_findings %}
+                {% for group in grouped_findings %}
+                    <div class="finding">
+                        <p style="margin:0 0 10px;"><strong>{{ group.clause_title }}</strong></p>
+                        {% for finding in group.findings %}
+                            <div style="padding:12px 0; {% if not forloop.last %}border-bottom:1px solid var(--border);{% endif %}">
+                                <p style="margin:0 0 6px;"><span class="badge badge-{{ finding.severity }}">{{ finding.severity|risk_label }}</span></p>
+                                <p style="margin:0 0 8px;"><strong>Etiqueta:</strong> {{ finding.label }}</p>
+                                <p style="margin:0 0 8px;"><strong>Evidencia:</strong> {{ finding.evidence }}</p>
+                                <p style="margin:0;"><strong>Recomendación:</strong> {{ finding.recommendation }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="muted">No se detectaron banderas rojas en esta revisión automática.</p>
+            {% endif %}
+        </article>
+    </div>
+</section>
+{% endblock %}
+
