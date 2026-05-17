@@ -1,13 +1,41 @@
 .venv/
+.env
+.env.*
+
+# Python
 __pycache__/
 *.py[cod]
-*.sqlite3
-.env
+*.pyd
+*.pyo
 .pytest_cache/
 .mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Django / app data
+*.sqlite3
+db.sqlite3
+staticfiles/
+media/
+media_*/
+
+# Logs
+*.log
+
+# IDEs / OS
 .idea/
 .vscode/
 .DS_Store
-*.log
-staticfiles/
+Thumbs.db
+
+# Packaging / build
+build/
+dist/
+*.egg-info/
+
+# Docker / local runtime
+*.pid
+*.seed
 
